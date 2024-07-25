@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Number Sorting App</title>
+<style>
+    * {
+        background-color: black;
+        color: aliceblue;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .list {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    input {
+        width: 300px;
+        height: 30px;
+        margin-bottom: 10px;
+        font-size: x-large;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        max-height: 150px; /* Set the desired height for the scrollable area */
+        overflow-y: auto;
+        width: 150px;
+        border: 1px solid aliceblue;
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #1a1a1a;
+    }
+
+    li {
+        margin: 5px 0;
+    }
+
+    button{
+        background-color: aliceblue;
+        color: #1a1a1a;
+        height: 30px;
+        width: 100px;
+    }
+
+    button:hover{
+        background-color: aquamarine;
+    }
+</style>
+</head>
+<body>
+
+<h2>Number Sorting App</h2>
+
+<input type="number" id="numberInput" placeholder="Enter a number"><br>
+<button onclick="addNumber()">Add Number</button>
+<button id="sortNumbers" onclick="sortNumbers()" disabled>Sort Numbers</button>
+<button id="clearList" onclick="clearList()" disabled>Clear List</button>
+<button id="clearLast" onclick="clearLast()" disabled>Clear Last</button>
+<div class="list">
+    <div>
+        <h3>Unsorted List:</h3>
+        <ul id="unsortedList"></ul>
+    </div>
+    <div>
+        <h3>Sorted List:</h3>
+        <ul id="sortedList"></ul>
+    </div>
+</div>
+<script>
+let numbers = [];
+
+function addNumber() {
+    const input = document.getElementById('numberInput');
+    const number = parseInt(input.value);
+    
+    if (!isNaN(number)) {
+        numbers.push(number);
+        input.value = ''; // Clear the input after adding
+        document.getElementById('sortNumbers').disabled = false; // Enable sort button
+        document.getElementById('clearList').disabled = false; // Enable clear button
+        document.getElementById('clearLast').disabled = false; // Enable clear last button
+        displayNumbers('unsortedList', numbers);
+    }
+}
+
+function sortNumbers() {
+    let sortedNumbers = [...numbers];
+    bubbleSort(sortedNumbers);
+    displayNumbers('sortedList', sortedNumbers); // Display sorted list
+}
+
+function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n-1; i++) {
+        for (let j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                let temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+}
+
+function clearList() {
+    numbers = []; // Reset the array
+    document.getElementById('unsortedList').innerHTML = ''; // Clear the displayed unsorted list
+    document.getElementById('sortedList').innerHTML = ''; // Clear the displayed sorted list
+    document.getElementById('sortNumbers').disabled = true; // Disable sort button
+    document.getElementById('clearList').disabled = true; // Disable clear button
+    document.getElementById('clearLast').disabled = true; // Disable clear last button
+}
+
+function clearLast() {
+    if (numbers.length > 0) {
+        numbers.pop(); // Remove the last element
+        displayNumbers('unsortedList', numbers); // Update the displayed unsorted list
+        
+        if (numbers.length === 0) {
+            clearList(); // Clear all if no elements left
+        } else {
+            let sortedNumbers = [...numbers];
+            bubbleSort(sortedNumbers);
+            displayNumbers('sortedList', sortedNumbers); // Update the displayed sorted list
+        }
+    }
+}
+
+function displayNumbers(listId, numbersArray) {
+    const listElement = document.getElementById(listId);
+    listElement.innerHTML = ''; // Clear existing list
+    
+    numbersArray.forEach(number => {
+        const listItem = document.createElement('li');
+        listItem.textContent = number;
+        listElement.appendChild(listItem);
+    });
+}
+</script>
+</body>
+</html>
